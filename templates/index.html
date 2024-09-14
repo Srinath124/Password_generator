@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Strong Password Generator</title>
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>Strong Password Generator</h1>
+        <label for="userInput">Enter text to strengthen:</label>
+        <input type="text" id="userInput">
+        <button id="generateBtn">Generate Password</button>
+
+        <h2>Generated Password:</h2>
+        <p id="generatedPassword"></p>
+
+        <h2>Password Strength:</h2>
+        <p id="passwordStrength"></p>
+    </div>
+
+    <script>
+        function checkPasswordStrength(password) {
+            let score = 0;
+            if (password.length >= 12) score += 20;
+            if (/[a-z]/.test(password)) score += 20;
+            if (/[A-Z]/.test(password)) score += 20;
+            if (/\d/.test(password)) score += 20;
+            if (/[!@#$%^&*(),.?":{}|<>]/.test(password)) score += 20;
+
+            return score;
+        }
+
+        function displayStrength(score) {
+            if (score >= 80) return "Very Strong";
+            if (score >= 60) return "Strong";
+            if (score >= 40) return "Medium";
+            return "Weak";
+        }
+
+        $('#generateBtn').click(function() {
+            const input = $('#userInput').val();
+            const generatedPassword = generateStrongPassword(input);
+            const strengthScore = checkPasswordStrength(generatedPassword);
+
+            $('#generatedPassword').text(`Original: ${input}, Strong: ${generatedPassword}`);
+            $('#passwordStrength').text(`Strength: ${displayStrength(strengthScore)}`);
+        });
+
+        function generateStrongPassword(input) {
+            const symbols = "!@#$%^&*";
+            let newPassword = input.replace(/[a-zA-Z0-9]/g, function(char) {
+                if (Math.random() > 0.5) {
+                    return symbols[Math.floor(Math.random() * symbols.length)];
+                }
+                return char;
+            });
+            return newPassword;
+        }
+    </script>
+</body>
+</html>
